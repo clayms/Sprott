@@ -1,0 +1,34 @@
+1000 REM TWO-D MAP SEARCH (Polynomials up to 5th Order)
+1020 DIM XS(499), YS(499), A(504), V(99), XY(4), XN(4)
+1060 OMAX% = 5                  'Maximum order of polynomial
+
+1720 M% = 1: XY(1) = X: XY(2) = Y
+1730 FOR I% = 1 TO D%
+1740 XN(I%) = A(M%)
+1750 M% = M% + 1
+1760 FOR I1% = 1 TO D%
+1770 XN(I%) = XN(I%) + A(M%) * XY(I1%)
+1780 M% = M% + 1
+1790 FOR I2% = I1% TO D%
+1800 XN(I%) = XN(I%) + A(M%) * XY(I1%) * XY(I2%)
+1810 M% = M% + 1
+1820 IF O% = 2 THEN GOTO 1970
+1830 FOR I3% = I2% TO D%
+1840 XN(I%) = XN(I%) + A(M%) * XY(I1%) * XY(I2%) * XY(I3%)
+1850 M% = M% + 1
+1860 IF O% = 3 THEN GOTO 1960
+1870 FOR I4% = I3% TO D%
+1880 XN(I%) = XN(I%) + A(M%) * XY(I1%) * XY(I2%) * XY(I3%) * XY(I4%)
+1890 M% = M% + 1
+1900 IF O% = 4 THEN GOTO 1950
+1910 FOR I5% = I4% TO D%
+1920 XN(I%) = XN(I%) + A(M%) * XY(I1%) * XY(I2%) * XY(I3%) * XY(I4%) * XY(I5%)
+1930 M% = M% + 1
+1940 NEXT I5%
+1950 NEXT I4%
+1960 NEXT I3%
+1970 NEXT I2%
+1980 NEXT I1%
+2000 NEXT I%
+2010 M% = M% - 1: XNEW = XN(1): YNEW = XN(2)
+

@@ -1,0 +1,41 @@
+1000 REM TWO-D MAP SEARCH
+1060 OMAX% = 2                  'Maximum order of polynomial
+1070 D% = 2                     'Dimension of system
+1100 SND% = 0                   'Turn sound off
+
+1520 Y = .05
+1550 XE = X + .000001: YE = Y
+1590 XMIN = 1000000!: XMAX = -XMIN: YMIN = XMIN: YMAX = XMAX
+
+1720 XNEW = A(1) + X * (A(2) + A(3) * X + A(4) * Y)
+1730 XNEW = XNEW + Y * (A(5) + A(6) * Y)
+1830 YNEW = A(7) + X * (A(8) + A(9) * X + A(10) * Y)
+1930 YNEW = YNEW + Y * (A(11) + A(12) * Y)
+
+2140    IF Y < YMIN THEN YMIN = Y
+2150    IF Y > YMAX THEN YMAX = Y
+2240 IF D% = 1 THEN XP = XS(I%): YP = XNEW ELSE XP = X: YP = Y
+2250 IF N < 1000 OR XP <= XL OR XP >= XH OR YP <= YL OR YP >= YH THEN GOTO 2320
+2300    PSET (XP, YP)                   'Plot point on screen
+
+2410 IF ABS(XNEW) + ABS(YNEW) > 1000000! THEN T% = 2    'Unbounded
+2470 IF ABS(XNEW - X) + ABS(YNEW - Y) < .000001 THEN T% = 2
+2520 Y = YNEW
+
+2660 CODE$ = CHR$(59 + 4 * D% + O%)
+2680 M% = 1: FOR I% = 1 TO D%: M% = M% * (O% + I%): NEXT I%
+
+2910 XSAVE = XNEW: YSAVE = YNEW: X = XE: Y = YE: N = N - 1
+2930 GOSUB 1700                 'Reiterate equations
+2940 DLX = XNEW - XSAVE: DLY = YNEW - YSAVE
+2960 DL2 = DLX * DLX + DLY * DLY
+2970 IF CSNG(DL2) <= 0 THEN GOTO 3070       'Don't divide by zero
+2980    DF = 1000000000000# * DL2
+2990    RS = 1 / SQR(DF)
+3000    XE = XSAVE + RS * (XNEW - XSAVE): YE = YSAVE + RS * (YNEW - YSAVE)
+3020    XNEW = XSAVE: YNEW = YSAVE
+3030    IF DF > 0 THEN LSUM = LSUM + LOG(DF): NL = NL + 1
+3040    L = .721347 * LSUM / NL
+
+3110 IF D% = 1 THEN YMIN = XMIN: YMAX = XMAX
+

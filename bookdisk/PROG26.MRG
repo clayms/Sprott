@@ -1,0 +1,14 @@
+1000 REM SPECIAL FUNCTION SEARCH (Webs and Wreaths)
+1090 ODE% = 6                   'System is special function ]
+1150 TWOPI = 6.28318530717959#  'A useful constant (2 pi)
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 11): T% = 1
+
+6390 IF ODE% <> 6 THEN GOTO 6450
+6400    M% = 6
+6410    IF N < 2 THEN AL = TWOPI / (13 + 10 * A(6)): SINAL = SIN(AL): COSAL = COS(AL)
+6420    DUM = X + A(2) * SIN(A(3) * Y + A(4))
+6430    XNEW = 10 * A(1) + DUM * COSAL + Y * SINAL
+6440    YNEW = 10 * A(5) - DUM * SINAL + Y * COSAL
+6450 RETURN
+

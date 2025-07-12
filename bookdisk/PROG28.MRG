@@ -1,0 +1,84 @@
+1000 REM STRANGE ATTRACTOR PROGRAM  BASIC Ver 2.0 (c) 1993 by J. C. Sprott
+1070 D% = 2                     'Dimension of system
+1090 ODE% = 0                   'System is map
+1140 SAV% = 0                   'Don't save any data
+
+1310 ON ERROR GOTO 6600         'Find legal graphics mode
+1330 ON ERROR GOTO 0            'Resume default error trapping
+1340 DEF SEG = 64: WID% = PEEK(74)  'Number of text columns
+1360 CLS : LOCATE 13, WID% / 2 - 6: PRINT "Searching..."
+
+2270    IF PJT% = 2 THEN GOSUB 6700     'Project onto a horizontal cylinder
+2280    IF PJT% = 3 THEN GOSUB 6800     'Project onto a vertical cylinder
+2290    IF PJT% = 4 THEN GOSUB 6900     'Project onto a torus
+
+2500 IF SAV% > 0 THEN IF N > 1000 AND N < 17001 THEN GOSUB 7000 'Save data
+
+3060    IF N > 1000 AND N MOD 10 = 0 THEN LOCATE 1, WID% - 4: PRINT USING "##.##"; L;
+
+3360    IF WID% < 80 THEN GOTO 3390
+3400 LOCATE 1, 1: IF LEN(CODE$) < WID% - 18 THEN PRINT CODE$
+3410 IF LEN(CODE$) >= WID% - 18 THEN PRINT LEFT$(CODE$, WID% - 23) + "..."
+3420 LOCATE 1, WID% - 17: PRINT "F =": LOCATE 1, WID% - 7: PRINT "L ="
+
+3630 IF INSTR("ACDEHINPRSVX", Q$) = 0 THEN GOSUB 4200   'Display menu screen
+3670 IF Q$ = "C" THEN IF N > 999 THEN N = 999
+3740 IF Q$ = "N" THEN NMAX = 10 * (NMAX - 1000) + 1000: IF NMAX > 10 ^ 10 THEN NMAX = 2000
+3750 IF Q$ = "P" THEN PJT% = (PJT% + 1) MOD 5: T% = 3: IF N > 999 THEN N = 999
+3780 IF Q$ = "V" THEN SAV% = (SAV% + 1) MOD 5: FAV$ = CHR$(87 + SAV% MOD 4): T% = 3: IF N > 999 THEN N = 999
+
+4000    LOCATE 1, WID% - 14: PRINT USING "##.##"; F;
+
+4240    PRINT TAB(27); "IBM PC BASIC Version 2.0"
+4250    PRINT TAB(27); "(c) 1993 by J. C. Sprott"
+4280    PRINT TAB(27); "C: Clear screen and restart"
+4380    PRINT TAB(27); "N: Number of iterations is 10^";
+4390    PRINT USING "#"; CINT(LOG(NMAX - 1000) / LOG(10))
+4430        IF PJT% = 2 THEN PRINT "horiz cyl"
+4440        IF PJT% = 3 THEN PRINT "vert cyl "
+4450        IF PJT% = 4 THEN PRINT "toroidal "
+4570    PRINT TAB(27); "V: ";
+4580        IF SAV% = 0 THEN PRINT "No data will be saved       "
+4590        IF SAV% > 0 THEN PRINT FAV$; " will be saved in "; FAV$; "DATA.DAT"
+
+5650 IF SM% > 2 THEN GOTO 5720  'Not in CGA mode
+5660    WID% = 80: IF D% < 3 THEN SCREEN 2: GOTO 5720
+5670    IF (TRD% = 0 OR TRD% > 4) AND (D% = 3 OR FTH% <> 2) THEN SCREEN 2: GOTO 5720
+5680    WID% = 40: SCREEN 1
+5690    COLR%(0) = 0: COLR%(1) = 2: COLR%(2) = 1: COLR%(3) = 3
+5700    WH% = 3: BK% = 0: RD% = 2: CY% = 1
+5710    FOR I% = 4 TO NC%: COLR%(I%) = COLR%(I% MOD 4 + 1): NEXT I%
+
+5840 IF Q$ <> CHR$(27) AND INSTR("CHNPRVS", Q$) = 0 THEN Q$ = ""
+
+6600 REM Find legal graphics mode
+6610 SM% = SM% - 1
+6620 IF SM% = 0 THEN PRINT "This program requires a graphics monitor": STOP
+6630 RESUME
+
+6700 REM Project onto a horizontal cylinder
+6710 PH = PT * (YMAX - YP)
+6720 YP = YA + .5 * (YH - YL) * COS(PH)
+6730 RETURN
+
+6800 REM Project onto a vertical cylinder
+6810 TH = TT * (XMAX - XP)
+6820 XP = XA + .5 * (XH - XL) * COS(TH)
+6830 RETURN
+
+6900 REM Project onto a torus (unity aspect ratio)
+6910 TH = TT * (XMAX - XP)
+6920 PH = 2 * PT * (YMAX - YP)
+6930 XP = XA + .18 * (XH - XL) * (1 + COS(TH)) * SIN(PH)
+6940 YP = YA + .25 * (YH - YL) * (1 + COS(TH)) * COS(PH)
+6950 RETURN
+
+7000 REM Save data
+7010 IF N = 1001 THEN CLOSE #3: OPEN FAV$ + "DATA.DAT" FOR OUTPUT AS #3
+7020 IF SAV% = 1 THEN DUM = XNEW
+7030 IF SAV% = 2 THEN DUM = YNEW
+7040 IF SAV% = 3 THEN DUM = ZNEW
+7050 IF SAV% = 4 THEN DUM = WNEW
+7060 PRINT #3, CSNG(DUM)
+7070 RETURN
+

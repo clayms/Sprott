@@ -1,0 +1,10 @@
+1000 REM THREE-D MAP SEARCH (With Contour Bands)
+1120 TRD% = 2                   'Display third dimension as bands
+
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 3: T% = 3: IF N > 999 THEN N = 999
+
+4490        IF TRD% = 2 THEN PRINT "bands     "
+
+5130 IF TRD% = 2 THEN PSET (XP, YP), COLR%(INT(60 * (Z - ZMIN) / (ZMAX - ZMIN) + 4) MOD 4)
+5240 RETURN
+

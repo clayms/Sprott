@@ -1,0 +1,31 @@
+1000 REM TWO-D MAP SEARCH (With Fractal Dimension)
+1020 DIM XS(499), YS(499), A(504), V(99)
+
+1580 P% = 0: LSUM = 0: N = 0: NL = 0: N1 = 0: N2 = 0
+1620 TWOD% = 2 ^ D%
+
+2210 XS(P%) = X: YS(P%) = Y
+
+2440 GOSUB 3900                 'Calculate fractal dimension
+
+3030    LSUM = LSUM + LOG(DF): NL = NL + 1
+3060    IF N > 1000 AND N MOD 10 = 0 THEN LOCATE 1, 76: PRINT USING "##.##"; L;
+
+3170 XL = XMIN - MX: XH = XMAX + MX: YL = YMIN - MY: YH = YMAX + 1.5 * MY
+3190 YH = YH - .5 * MY
+3400 LOCATE 1, 1: PRINT CODE$
+3420 LOCATE 1, 63: PRINT "F =": LOCATE 1, 73: PRINT "L ="
+
+3900 REM Calculate fractal dimension
+3910 IF N < 1000 THEN GOTO 4010         'Wait for transient to settle
+3920 IF N = 1000 THEN D2MAX = (XMAX - XMIN) ^ 2 + (YMAX - YMIN) ^ 2
+3930 J% = (P% + 1 + INT(480 * RND)) MOD 500
+3940 DX = XNEW - XS(J%): DY = YNEW - YS(J%)
+3950 D2 = DX * DX + DY * DY
+3960 IF D2 < .001 * TWOD% * D2MAX THEN N2 = N2 + 1
+3970 IF D2 > .00001 * TWOD% * D2MAX THEN GOTO 4010
+3980    N1 = N1 + 1
+3990    F = .434294 * LOG(N2 / (N1 - .5))
+4000    LOCATE 1, 66: PRINT USING "##.##"; F;
+4010 RETURN
+

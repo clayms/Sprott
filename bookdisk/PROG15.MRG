@@ -1,0 +1,20 @@
+1000 REM THREE-D MAP SEARCH (With Anaglyphic Display)
+1120 TRD% = 4                   'Display third dimension as anaglyph
+
+3220    ZA = (ZMAX + ZMIN) / 2
+3240    IF TRD% = 4 THEN LINE (XL, YL)-(XH, YH), WH%, BF
+
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 5: T% = 3: IF N > 999 THEN N = 999: GOSUB 5600
+
+4510        IF TRD% = 4 THEN PRINT "anaglyph  "
+
+5170 IF TRD% <> 4 THEN GOTO 5240
+5180    XRT = XP + XZ * (Z - ZA): C% = POINT(XRT, YP)
+5190    IF C% = WH% THEN PSET (XRT, YP), RD%
+5200    IF C% = CY% THEN PSET (XRT, YP), BK%
+5210    XLT = XP - XZ * (Z - ZA): C% = POINT(XLT, YP)
+5220    IF C% = WH% THEN PSET (XLT, YP), CY%
+5230    IF C% = RD% THEN PSET (XLT, YP), BK%
+
+5640 WH% = 15: BK% = 8: RD% = 12: CY% = 11
+

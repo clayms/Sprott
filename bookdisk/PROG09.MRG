@@ -1,0 +1,19 @@
+1000 REM TWO-D MAP SEARCH (Projected onto a Sphere)
+1110 PJT% = 1                   'Projection is spherical
+
+2260    IF PJT% = 1 THEN GOSUB 4100     'Project onto a sphere
+
+3200 XA = (XL + XH) / 2: YA = (YL + YH) / 2
+3310 IF PJT% <> 1 THEN LINE (XL, YL)-(XH, YH), , B
+3320 IF PJT% = 1 THEN CIRCLE (XA, YA), .36 * (XH - XL)
+3330 TT = 3.1416 / (XMAX - XMIN): PT = 3.1416 / (YMAX - YMIN)
+
+3750 IF Q$ = "P" THEN PJT% = (PJT% + 1) MOD 2: T% = 3: IF N > 999 THEN N = 999
+
+4100 REM Project onto a sphere
+4110 TH = TT * (XMAX - XP)
+4120 PH = PT * (YMAX - YP)
+4130 XP = XA + .36 * (XH - XL) * COS(TH) * SIN(PH)
+4140 YP = YA + .5 * (YH - YL) * COS(PH)
+4150 RETURN
+

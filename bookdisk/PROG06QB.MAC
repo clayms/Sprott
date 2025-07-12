@@ -1,0 +1,126 @@
+1000 REM TWO-D MAP SEARCH  Macintosh QuickBASIC Ver 1.0 (c) 1993 by J. C. Sprott
+1010 DEFDBL A-Z                 'Use double precision
+1020 DIM XS(499), A(504), V(99)
+1040 PREV% = 5                  'Plot versus fifth previous iterate
+1050 NMAX = 11000               'Maximum number of iterations
+1060 OMAX% = 2                  'Maximum order of polynomial
+1070 D% = 2                     'Dimension of system
+1100 SND% = 0                   'Turn sound off
+1160 RANDOMIZE TIMER            'Reseed random number generator
+1190 GOSUB 1300                 'Initialize
+1200 GOSUB 1500                 'Set parameters
+1210 GOSUB 1700                 'Iterate equations
+1220 GOSUB 2100                 'Display results
+1230 GOSUB 2400                 'Test results
+1240 ON T% GOTO 1190, 1200, 1210
+1250 CLS
+1260 END
+
+1300 REM Initialize
+1320 WINDOW 1, "Strange Attractors", (0, 36)-(SYSTEM(5), SYSTEM(6)), 1
+1350 MENU 2, 0, 1, "Options": MENU 2, 1, SND% + 1, "Sound"
+1360 WW = WINDOW(2) / 2: WH = WINDOW(3) / 2: CLS
+1370 BUTTON 1, 1, "Searching...", (WW - 45, WH - 10) - (WW + 45, WH + 10)
+1420 RETURN
+
+1500 REM Set parameters
+1510 X = .05                    'Initial condition
+1520 Y = .05
+1550 XE = X + .000001: YE = Y
+1560 GOSUB 2600                 'Get coefficients
+1570 T% = 3
+1580 P% = 0: LSUM = 0: N = 0: NL = 0
+1590 XMIN = 1000000!: XMAX = -XMIN: YMIN = XMIN: YMAX = XMAX
+1630 RETURN
+
+1700 REM Iterate equations
+1720 XNEW = A(1) + X * (A(2) + A(3) * X + A(4) * Y)
+1730 XNEW = XNEW + Y * (A(5) + A(6) * Y)
+1830 YNEW = A(7) + X * (A(8) + A(9) * X + A(10) * Y)
+1930 YNEW = YNEW + Y * (A(11) + A(12) * Y)
+2020 N = N + 1
+2030 RETURN
+
+2100 REM Display results
+2110 IF N < 100 OR N > 1000 THEN GOTO 2200
+2120    IF X < XMIN THEN XMIN = X
+2130    IF X > XMAX THEN XMAX = X
+2140    IF Y < YMIN THEN YMIN = Y
+2150    IF Y > YMAX THEN YMAX = Y
+2200 IF N = 1000 THEN GOSUB 3100        'Resize the screen
+2210 XS(P%) = X
+2220 P% = (P% + 1) MOD 500
+2230 I% = (P% + 500 - PREV%) MOD 500
+2240 IF D% = 1 THEN XP = XS(I%): YP = XNEW ELSE XP = X: YP = Y
+2250 IF N < 1000 OR XP <= XL OR XP >= XH OR YP <= YL OR YP >= YH THEN GOTO 2320
+2300    PSET (WW * (XP - XL) / (XH - XL), WH * (YH - YP) / (YH - YL))
+2310    IF SND% = 1 THEN GOSUB 3500     'Produce sound
+2320 RETURN
+
+2400 REM Test results
+2410 IF ABS(XNEW) + ABS(YNEW) > 1000000! THEN T% = 2    'Unbounded
+2430 GOSUB 2900                 'Calculate Lyapunov exponent
+2460 IF N >= NMAX THEN T% = 2   'Strange attractor found
+2470 IF ABS(XNEW - X) + ABS(YNEW - Y) < .000001 THEN T% = 2
+2480 IF N > 100 AND L < .005 THEN T% = 2    'Limit cycle
+2490 Q$ = INKEY$: IF LEN(Q$) THEN GOSUB 3600        'Respond to user command
+2500 IF MENU(0) = 2 AND MENU(1) = 1 THEN Q$ = "S": GOSUB 3600
+2510 X = XNEW                   'Update value of X
+2520 Y = YNEW
+2550 RETURN
+
+2600 REM Get coefficients
+2650 O% = 2 + INT((OMAX% - 1) * RND)
+2660 CODE$ = CHR$(59 + 4 * D% + O%)
+2680 M% = 1: FOR I% = 1 TO D%: M% = M% * (O% + I%): NEXT I%
+2690    FOR I% = 1 TO M%        'Construct CODE$
+2700        GOSUB 2800          'Shuffle random numbers
+2710        CODE$ = CODE$ + CHR$(65 + INT(25 * RAN))
+2720    NEXT I%
+2730 FOR I% = 1 TO M%           'Convert CODE$ to coefficient values
+2740    A(I%) = (ASC(MID$(CODE$, I% + 1, 1)) - 77) / 10
+2750 NEXT I%
+2760 RETURN
+
+2800 REM Shuffle random numbers
+2810 IF V(0) = 0 THEN FOR J% = 0 TO 99: V(J%) = RND: NEXT J%
+2820 J% = INT(100 * RAN)
+2830 RAN = V(J%)
+2840 V(J%) = RND
+2850 RETURN
+
+2900 REM Calculate Lyapunov exponent
+2910 XSAVE = XNEW: YSAVE = YNEW: X = XE: Y = YE: N = N - 1
+2930 GOSUB 1700                 'Reiterate equations
+2940 DLX = XNEW - XSAVE: DLY = YNEW - YSAVE
+2960 DL2 = DLX * DLX + DLY * DLY
+2970 IF CSNG(DL2) <= 0 THEN GOTO 3070       'Don't divide by zero
+2980    DF = 1000000000000# * DL2
+2990    RS = 1 / SQR(DF)
+3000    XE = XSAVE + RS * (XNEW - XSAVE): YE = YSAVE + RS * (YNEW - YSAVE)
+3020    XNEW = XSAVE: YNEW = YSAVE
+3030    IF DF > 0 THEN LSUM = LSUM + LOG(DF): NL = NL + 1
+3040    L = .721347 * LSUM / NL
+3070 RETURN
+
+3100 REM Resize the screen
+3110 IF D% = 1 THEN YMIN = XMIN: YMAX = XMAX
+3120 IF XMAX - XMIN < .000001 THEN XMIN = XMIN - .0000005: XMAX = XMAX + .0000005
+3130 IF YMAX - YMIN < .000001 THEN YMIN = YMIN - .0000005: YMAX = YMAX + .0000005
+3160 MX = .1 * (XMAX - XMIN): MY = .1 * (YMAX - YMIN)
+3170 XL = XMIN - MX: XH = XMAX + MX: YL = YMIN - MY: YH = YMAX + MY
+3180 WW = WINDOW(2): WH = WINDOW(3): BUTTON CLOSE 0: CLS
+3460 RETURN
+
+3500 REM Produce sound
+3510 FREQ% = 220 * 2 ^ (CINT(36 * (XNEW - XL) / (XH - XL)) / 12)
+3520 DUR = 1
+3540 SOUND FREQ%, DUR: IF PLAY(0) THEN PLAY "MF"
+3550 RETURN
+
+3600 REM Respond to user command
+3610 T% = 0
+3630 IF ASC(Q$) > 96 THEN Q$ = CHR$(ASC(Q$) - 32)
+3770 IF Q$ = "S" THEN SND% = (SND% + 1) MOD 2: T% = 3: MENU 2, 1, SND% + 1, "Sound"
+3800 RETURN
+

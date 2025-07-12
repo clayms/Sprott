@@ -1,0 +1,11 @@
+1000 REM SPECIAL FUNCTION SEARCH (Sines and Cosines)
+1090 ODE% = 5                   'System is special function \
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 10): T% = 1
+
+6350 IF ODE% <> 5 THEN GOTO 6390
+6360    M% = 18
+6370    XNEW = A(1) + A(2) * X + A(3) * Y + A(4) * SIN(A(5) * X + A(6)) + A(7) * SIN(A(8) * Y + A(9))
+6380    YNEW = A(10) + A(11) * X + A(12) * Y + A(13) * SIN(A(14) * X + A(15)) + A(16) * SIN(A(17) * Y + A(18))
+6390 RETURN
+

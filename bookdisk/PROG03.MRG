@@ -1,0 +1,61 @@
+1000 REM ONE-D MAP SEARCH
+1020 DIM XS(499), A(504), V(99)
+1050 NMAX = 11000               'Maximum number of iterations
+1160 RANDOMIZE TIMER            'Reseed random number generator
+
+1360 CLS : LOCATE 13, 34: PRINT "Searching..."
+
+1560 GOSUB 2600                 'Get coefficients
+1580 P% = 0: LSUM = 0: N = 0: NL = 0
+1590 XMIN = 1000000!: XMAX = -XMIN
+
+1720 XNEW = A(1) + (A(2) + A(3) * X) * X
+2020 N = N + 1
+
+2110 IF N < 100 OR N > 1000 THEN GOTO 2200
+2120    IF X < XMIN THEN XMIN = X
+2130    IF X > XMAX THEN XMAX = X
+2140    YMIN = XMIN: YMAX = XMAX
+2200 IF N = 1000 THEN GOSUB 3100        'Resize the screen
+2250 IF N < 1000 OR XS(I%) <= XL OR XS(I%) >= XH OR XNEW <= XL OR XNEW >= XH THEN GOTO 2320
+
+2410 IF ABS(XNEW) > 1000000! THEN T% = 2    'Unbounded
+2430 GOSUB 2900                 'Calculate Lyapunov exponent
+2460 IF N >= NMAX THEN T% = 2   'Strange attractor found
+2470 IF ABS(XNEW - X) < .000001 THEN T% = 2 'Fixed point
+2480 IF N > 100 AND L < .005 THEN T% = 2    'Limit cycle
+
+2600 REM Get coefficients
+2660 CODE$ = "A"
+2680 M% = 3
+2690    FOR I% = 1 TO M%        'Construct CODE$
+2700        GOSUB 2800          'Shuffle random numbers
+2710        CODE$ = CODE$ + CHR$(65 + INT(25 * RAN))
+2720    NEXT I%
+2730 FOR I% = 1 TO M%           'Convert CODE$ to coefficient values
+2740    A(I%) = (ASC(MID$(CODE$, I% + 1, 1)) - 77) / 10
+2750 NEXT I%
+2760 RETURN
+
+2800 REM Shuffle random numbers
+2810 IF V(0) = 0 THEN FOR J% = 0 TO 99: V(J%) = RND: NEXT J%
+2820 J% = INT(100 * RAN)
+2830 RAN = V(J%)
+2840 V(J%) = RND
+2850 RETURN
+
+2900 REM Calculate Lyapunov exponent
+2910 DF = ABS(A(2) + 2 * A(3) * X)
+3030 IF DF > 0 THEN LSUM = LSUM + LOG(DF): NL = NL + 1
+3040 L = .721347 * LSUM / NL
+3070 RETURN
+
+3100 REM Resize the screen
+3120 IF XMAX - XMIN < .000001 THEN XMIN = XMIN - .0000005: XMAX = XMAX + .0000005
+3130 IF YMAX - YMIN < .000001 THEN YMIN = YMIN - .0000005: YMAX = YMAX + .0000005
+3160 MX = .1 * (XMAX - XMIN): MY = .1 * (YMAX - YMIN)
+3170 XL = XMIN - MX: XH = XMAX + MX: YL = YMIN - MY: YH = YMAX + MY
+3180 WINDOW (XL, YL)-(XH, YH): CLS
+3310 LINE (XL, YL)-(XH, YH), , B
+3460 RETURN
+

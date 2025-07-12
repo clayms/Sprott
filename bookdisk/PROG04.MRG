@@ -1,0 +1,18 @@
+1000 REM ONE-D MAP SEARCH (Polynomials up to 5th Order)
+1060 OMAX% = 5                  'Maximum order of polynomial
+
+1720 XNEW = A(O% + 1)
+1730 FOR I% = O% TO 1 STEP -1
+1830    XNEW = A(I%) + XNEW * X
+1930 NEXT I%
+
+2650 O% = 2 + INT((OMAX% - 1) * RND)
+2660 CODE$ = CHR$(63 + O%)
+2680 M% = O% + 1
+
+2910 DF = 0
+2930 FOR I% = O% TO 1 STEP -1
+2940    DF = I% * A(I% + 1) + DF * X
+2970 NEXT I%
+3000 DF = ABS(DF)
+

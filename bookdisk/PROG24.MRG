@@ -1,0 +1,11 @@
+1000 REM SPECIAL FUNCTION SEARCH (Roots and Powers)
+1090 ODE% = 4                   'System is special function [
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 9): T% = 1
+
+6310 IF ODE% <> 4 THEN GOTO 6350
+6320    M% = 14
+6330    XNEW = A(1) + A(2) * X + A(3) * Y + A(4) * ABS(X) ^ A(5) + A(6) * ABS(Y) ^ A(7)
+6340    YNEW = A(8) + A(9) * X + A(10) * Y + A(11) * ABS(X) ^ A(12) + A(13) * ABS(Y) ^ A(14)
+6350 RETURN
+

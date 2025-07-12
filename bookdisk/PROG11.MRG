@@ -1,0 +1,46 @@
+1000 REM THREE-D MAP SEARCH
+1020 DIM XS(499), YS(499), ZS(499), A(504), V(99), XY(4), XN(4)
+1070 D% = 3                     'Dimension of system
+1100 SND% = 0                   'Turn sound off
+
+1530 Z = .05
+1550 XE = X + .000001: YE = Y: ZE = Z
+1600 ZMIN = XMIN: ZMAX = XMAX
+
+1720 M% = 1: XY(1) = X: XY(2) = Y: XY(3) = Z
+2010 M% = M% - 1: XNEW = XN(1): YNEW = XN(2): ZNEW = XN(3)
+
+2160    IF Z < ZMIN THEN ZMIN = Z
+2170    IF Z > ZMAX THEN ZMAX = Z
+2210 XS(P%) = X: YS(P%) = Y: ZS(P%) = Z
+
+2410 IF ABS(XNEW) + ABS(YNEW) + ABS(ZNEW) > 1000000! THEN T% = 2
+2460 IF N >= NMAX THEN T% = 2: GOSUB 4900   'Strange attractor found
+2470 IF ABS(XNEW - X) + ABS(YNEW - Y) + ABS(ZNEW - Z) < .000001 THEN T% = 2
+2530 Z = ZNEW
+
+2910 XSAVE = XNEW: YSAVE = YNEW: ZSAVE = ZNEW
+2920 X = XE: Y = YE: Z = ZE: N = N - 1
+2950 DLZ = ZNEW - ZSAVE
+2960 DL2 = DLX * DLX + DLY * DLY + DLZ * DLZ
+3010    ZE = ZSAVE + RS * (ZNEW - ZSAVE)
+3020    XNEW = XSAVE: YNEW = YSAVE: ZNEW = ZSAVE
+
+3140 IF ZMAX - ZMIN < .000001 THEN ZMIN = ZMIN - .0000005: ZMAX = ZMAX + .0000005
+3400 LOCATE 1, 1: IF LEN(CODE$) < 62 THEN PRINT CODE$
+3410 IF LEN(CODE$) >= 62 THEN PRINT LEFT$(CODE$, 57) + "..."
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 3): T% = 1
+
+3920 IF N = 1000 THEN D2MAX = (XMAX - XMIN) ^ 2 + (YMAX - YMIN) ^ 2 + (ZMAX - ZMIN) ^ 2
+3940 DX = XNEW - XS(J%): DY = YNEW - YS(J%): DZ = ZNEW - ZS(J%)
+3950 D2 = DX * DX + DY * DY + DZ * DZ
+
+4760 IF D% = 3 THEN M% = M% / 2
+
+4900 REM Save attractor to disk file SA.DIC
+4910 OPEN "SA.DIC" FOR APPEND AS #1
+4920 PRINT #1, CODE$; : PRINT #1, USING "##.##"; F; L
+4930 CLOSE #1
+4940 RETURN
+

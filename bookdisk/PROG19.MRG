@@ -1,0 +1,29 @@
+1000 REM FOUR-D MAP SEARCH (With 4-D Display Modes)
+1040 PREV% = 5                  'Plot versus fifth previous iterate
+1120 TRD% = 1                   'Display third dimension as shadow
+1130 FTH% = 2                   'Display fourth dimension as colors
+
+3630 IF Q$ = "" OR INSTR("ADHIPRSX", Q$) = 0 THEN GOSUB 4200
+3720 IF Q$ = "H" THEN FTH% = (FTH% + 1) MOD 3: T% = 3: IF N > 999 THEN N = 999: GOSUB 5600
+
+4330    PRINT TAB(27); "H: Fourth dimension is ";
+4340        IF FTH% = 0 THEN PRINT "projection"
+4350        IF FTH% = 1 THEN PRINT "bands     "
+4360        IF FTH% = 2 THEN PRINT "colors    "
+
+5010 C4% = WH%
+5020 IF D% < 4 THEN GOTO 5050
+5030    IF FTH% = 1 THEN IF INT(30 * (W - WMIN) / (WMAX - WMIN)) MOD 2 THEN GOTO 5330
+5040    IF FTH% = 2 THEN C4% = 1 + INT(NC% * (W - WMIN) / (WMAX - WMIN) + NC%) MOD NC%
+5050 IF D% < 3 THEN PSET (XP, YP): GOTO 5330    'Skip 3-D stuff
+5060 IF TRD% = 0 THEN PSET (XP, YP), C4%
+5080    IF D% > 3 AND FTH% = 2 THEN PSET (XP, YP), C4%: GOTO 5110
+5130 IF TRD% <> 2 THEN GOTO 5160
+5140    IF D% > 3 AND FTH% = 2 AND (INT(15 * (Z - ZMIN) / (ZMAX - ZMIN) + 2) MOD 2) = 1 THEN PSET (XP, YP), C4%
+5150    IF D% < 4 OR FTH% <> 2 THEN C% = COLR%(INT(60 * (Z - ZMIN) / (ZMAX - ZMIN) + 4) MOD 4): PSET (XP, YP), C%
+5260    XRT = XA + (XP + XZ * (Z - ZA) - XL) / HSF: PSET (XRT, YP), C4%
+5270    XLT = XA + (XP - XZ * (Z - ZA) - XH) / HSF: PSET (XLT, YP), C4%
+5320    PSET (XP, YP), C4%
+
+5630 IF TRD% = 3 OR (D% > 3 AND FTH% = 2 AND TRD% <> 1) THEN FOR I% = 0 TO NC%: COLR%(I%) = I% + 1: NEXT I%
+

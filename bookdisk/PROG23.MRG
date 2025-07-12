@@ -1,0 +1,11 @@
+1000 REM SPECIAL FUNCTION SEARCH (ANDs and ORs)
+1090 ODE% = 3                   'System is special function Z
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 8): T% = 1
+
+6270 IF ODE% <> 3 THEN GOTO 6310
+6280    M% = 14
+6290    XNEW = A(1) + A(2) * X + A(3) * Y + (CINT(A(4) * X) AND CINT(A(5) * Y)) + (CINT(A(6) * X) OR CINT(A(7) * Y))
+6300    YNEW = A(8) + A(9) * X + A(10) * Y + (CINT(A(11) * X) AND CINT(A(12) * Y)) + (CINT(A(13) * X) OR CINT(A(14) * Y))
+6310 RETURN
+

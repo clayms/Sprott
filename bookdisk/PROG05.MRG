@@ -1,0 +1,19 @@
+1000 REM ONE-D MAP SEARCH (With Sound)
+1100 SND% = 1                   'Turn sound on
+
+2310    IF SND% = 1 THEN GOSUB 3500     'Produce sound
+
+2490 Q$ = INKEY$: IF LEN(Q$) THEN GOSUB 3600        'Respond to user command
+
+3500 REM Produce sound
+3510 FREQ% = 220 * 2 ^ (CINT(36 * (XNEW - XL) / (XH - XL)) / 12)
+3520 DUR = 1
+3540 SOUND FREQ%, DUR: IF PLAY(0) THEN PLAY "MF"
+3550 RETURN
+
+3600 REM Respond to user command
+3610 T% = 0
+3630 IF ASC(Q$) > 96 THEN Q$ = CHR$(ASC(Q$) - 32)
+3770 IF Q$ = "S" THEN SND% = (SND% + 1) MOD 2: T% = 3
+3800 RETURN
+

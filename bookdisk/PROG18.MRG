@@ -1,0 +1,37 @@
+1000 REM FOUR-D MAP SEARCH
+1020 DIM XS(499), YS(499), ZS(499), WS(499), A(504), V(99), XY(4), XN(4), COLR%(15)
+1070 D% = 4                     'Dimension of system
+1120 TRD% = 0                   'Display third dimension as projection
+
+1540 W = .05
+1550 XE = X + .000001: YE = Y: ZE = Z: WE = W
+1610 WMIN = XMIN: WMAX = XMAX
+
+1720 M% = 1: XY(1) = X: XY(2) = Y: XY(3) = Z: XY(4) = W
+2010 M% = M% - 1: XNEW = XN(1): YNEW = XN(2): ZNEW = XN(3): WNEW = XN(4)
+
+2180    IF W < WMIN THEN WMIN = W
+2190    IF W > WMAX THEN WMAX = W
+2210 XS(P%) = X: YS(P%) = Y: ZS(P%) = Z: WS(P%) = W
+
+2410 IF ABS(XNEW) + ABS(YNEW) + ABS(ZNEW) + ABS(WNEW) > 1000000! THEN T% = 2
+2470 IF ABS(XNEW - X) + ABS(YNEW - Y) + ABS(ZNEW - Z) + ABS(WNEW - W) < .000001 THEN T% = 2
+2540 W = WNEW
+
+2910 XSAVE = XNEW: YSAVE = YNEW: ZSAVE = ZNEW: WSAVE = WNEW
+2920 X = XE: Y = YE: Z = ZE: W = WE: N = N - 1
+2950 DLZ = ZNEW - ZSAVE: DLW = WNEW - WSAVE
+2960 DL2 = DLX * DLX + DLY * DLY + DLZ * DLZ + DLW * DLW
+3010    ZE = ZSAVE + RS * (ZNEW - ZSAVE): WE = WSAVE + RS * (WNEW - WSAVE)
+3020    XNEW = XSAVE: YNEW = YSAVE: ZNEW = ZSAVE: WNEW = WSAVE
+
+3150 IF WMAX - WMIN < .000001 THEN WMIN = WMIN - .0000005: WMAX = WMAX + .0000005
+
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 4): T% = 1
+
+3920 IF N = 1000 THEN D2MAX = (XMAX - XMIN) ^ 2 + (YMAX - YMIN) ^ 2 + (ZMAX - ZMIN) ^ 2 + (WMAX - WMIN) ^ 2
+3940 DX = XNEW - XS(J%): DY = YNEW - YS(J%): DZ = ZNEW - ZS(J%): DW = WNEW - WS(J%)
+3950 D2 = DX * DX + DY * DY + DZ * DZ + DW * DW
+
+4760 IF D% > 2 THEN FOR I% = 3 TO D%: M% = M% / (I% - 1): NEXT I%
+

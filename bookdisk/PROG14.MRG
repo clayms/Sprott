@@ -1,0 +1,12 @@
+1000 REM THREE-D MAP SEARCH (With Color Display)
+1120 TRD% = 3                   'Display third dimension in color
+
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 4: T% = 3: IF N > 999 THEN N = 999: GOSUB 5600
+
+4500        IF TRD% = 3 THEN PRINT "colors    "
+
+5160 IF TRD% = 3 THEN PSET (XP, YP), COLR%(INT(NC% * (Z - ZMIN) / (ZMAX - ZMIN) + NC%) MOD NC%)
+
+5610 NC% = 15                   'Number of colors
+5630 IF TRD% = 3 THEN FOR I% = 0 TO NC%: COLR%(I%) = I% + 1: NEXT I%
+

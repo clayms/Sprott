@@ -1,0 +1,20 @@
+1000 REM THREE-D MAP SEARCH (With Sliced Display)
+1120 TRD% = 6                   'Display third dimension as slices
+
+3260    IF TRD% <> 6 THEN GOTO 3310
+3270        FOR I% = 1 TO 3
+3280            XP = XL + I% * (XH - XL) / 4: LINE (XP, YL)-(XP, YH)
+3290            YP = YL + I% * (YH - YL) / 4: LINE (XL, YP)-(XH, YP)
+3300        NEXT I%
+
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 7: T% = 3: IF N > 999 THEN N = 999: GOSUB 5600
+
+4530        IF TRD% = 6 THEN PRINT "slices    "
+
+5280 IF TRD% <> 6 THEN GOTO 5330
+5290    DZ = (15 * (Z - ZMIN) / (ZMAX - ZMIN) + .5) / 16
+5300    XP = (XP - XL + (INT(16 * DZ) MOD 4) * (XH - XL)) / 4 + XL
+5310    YP = (YP - YL + (3 - INT(4 * DZ) MOD 4) * (YH - YL)) / 4 + YL
+5320    PSET (XP, YP)
+5330 RETURN
+

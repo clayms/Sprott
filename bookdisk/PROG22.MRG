@@ -1,0 +1,24 @@
+1000 REM SPECIAL FUNCTION SEARCH (Steps and Tents)
+1090 ODE% = 2                   'System is special function Y
+
+1710 IF ODE% > 1 THEN GOSUB 6200: GOTO 2020     'Special function
+
+2670    IF ODE% > 1 THEN CODE$ = CHR$(87 + ODE%)
+
+3650 IF ODE% > 1 THEN D% = ODE% + 5
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 7): T% = 1
+3690 IF D% > 6 THEN ODE% = D% - 5: D% = 4: GOTO 3710
+
+4290    IF ODE% > 1 THEN PRINT TAB(27); "D: System is 4-D special map "; CHR$(87 + ODE%); " ": GOTO 4320
+
+4720 IF D% > 6 THEN ODE% = ASC(LEFT$(CODE$, 1)) - 87: D% = 4: GOSUB 6200: GOTO 4770
+
+6200 REM Special function definitions
+6210 ZNEW = X * X + Y * Y       'Default 3rd and 4th dimension
+6220 WNEW = (N - 100) / 900: IF N > 1000 THEN WNEW = (N - 1000) / (NMAX - 1000)
+6230 IF ODE% <> 2 THEN GOTO 6270
+6240    M% = 10
+6250    XNEW = A(1) + A(2) * X + A(3) * Y + A(4) * ABS(X) + A(5) * ABS(Y)
+6260    YNEW = A(6) + A(7) * X + A(8) * Y + A(9) * ABS(X) + A(10) * ABS(Y)
+6270 RETURN
+

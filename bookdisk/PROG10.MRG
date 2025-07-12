@@ -1,0 +1,52 @@
+1000 REM TWO-D MAP SEARCH (With Music and Menu Screen)
+1100 SND% = 1                   'Turn sound on
+1110 PJT% = 0                   'Projection is planar
+1170 GOSUB 4200                 'Display menu screen
+1180 IF Q$ = "X" THEN GOTO 1250 'Exit immediately on command
+
+2450 IF QM% > 0 THEN GOTO 2490  'Skip tests when not in search mode
+
+2640 IF QM% > 0 THEN GOTO 2730  'Not in search mode
+2650    O% = 2 + INT((OMAX% - 1) * RND)
+2660    CODE$ = CHR$(59 + 4 * D% + O%)
+2680    GOSUB 4700              'Get value of M%
+
+3530 IF D% > 1 THEN DUR = 2 ^ INT(.5 * (YH - YL) / (YNEW - 9 * YL / 8 + YH / 8))
+
+3610 IF ASC(Q$) > 96 THEN Q$ = CHR$(ASC(Q$) - 32)   'Convert to upper case
+3630 IF Q$ = "" OR INSTR("ADIPSX", Q$) = 0 THEN GOSUB 4200
+3640 IF Q$ = "A" THEN T% = 1: QM% = 0
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 2): T% = 1
+3730 IF Q$ = "I" THEN IF T% <> 1 THEN SCREEN 0: WIDTH 80: COLOR 15, 1: CLS : LINE INPUT "Code? "; CODE$: IF CODE$ = "" THEN Q$ = " ": CLS :  ELSE T% = 1: QM% = 1: GOSUB 4700
+3790 IF Q$ = "X" THEN T% = 0
+
+4200 REM Display menu screen
+4210 SCREEN 0: WIDTH 80: COLOR 15, 1: CLS
+4220 WHILE Q$ = "" OR INSTR("AIX", Q$) = 0
+4230    LOCATE 1, 27: PRINT "STRANGE ATTRACTOR PROGRAM"
+4260    PRINT : PRINT
+4270    PRINT TAB(27); "A: Search for attractors"
+4300    PRINT TAB(27); "D: System is"; STR$(D%); "-D polynomial map"
+4370    PRINT TAB(27); "I: Input code from keyboard"
+4400    PRINT TAB(27); "P: Projection is ";
+4410        IF PJT% = 0 THEN PRINT "planar   "
+4420        IF PJT% = 1 THEN PRINT "spherical"
+4540    PRINT TAB(27); "S: Sound is ";
+4550        IF SND% = 0 THEN PRINT "off"
+4560        IF SND% = 1 THEN PRINT "on "
+4600    PRINT TAB(27); "X: Exit program"
+4610    Q$ = INKEY$
+4620    IF Q$ <> "" THEN GOSUB 3600     'Respond to user command
+4630 WEND
+4640 RETURN
+
+4700 REM Get dimension and order
+4710 D% = 1 + INT((ASC(LEFT$(CODE$, 1)) - 65) / 4)
+4740 O% = 2 + (ASC(LEFT$(CODE$, 1)) - 65) MOD 4
+4750 M% = 1: FOR I% = 1 TO D%: M% = M% * (O% + I%): NEXT I%
+4770 IF LEN(CODE$) = M% + 1 OR QM% <> 1 THEN GOTO 4810
+4780    BEEP        'Illegal code warning
+4790    WHILE LEN(CODE$) < M% + 1: CODE$ = CODE$ + "M": WEND
+4800    IF LEN(CODE$) > M% + 1 THEN CODE$ = LEFT$(CODE$, M% + 1)
+4810 RETURN
+

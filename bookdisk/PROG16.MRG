@@ -1,0 +1,16 @@
+1000 REM THREE-D MAP SEARCH (With Stereo Display)
+1120 TRD% = 5                   'Display third dimension as stereogram
+
+3250    IF TRD% = 5 THEN LINE (XA, YL)-(XA, YH)
+3320 IF PJT% = 1 AND TRD% < 5 THEN CIRCLE (XA, YA), .36 * (XH - XL)
+
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 6: T% = 3: IF N > 999 THEN N = 999: GOSUB 5600
+
+4520        IF TRD% = 5 THEN PRINT "stereogram"
+
+5240 IF TRD% <> 5 THEN GOTO 5280
+5250    HSF = 2                 'Horizontal scale factor
+5260    XRT = XA + (XP + XZ * (Z - ZA) - XL) / HSF: PSET (XRT, YP)
+5270    XLT = XA + (XP - XZ * (Z - ZA) - XH) / HSF: PSET (XLT, YP)
+5280 RETURN
+

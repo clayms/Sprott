@@ -1,0 +1,20 @@
+1000 REM ODE SEARCH
+1070 D% = 3                     'Dimension of system
+1080 EPS = .1                   'Step size for ODE
+1090 ODE% = 1                   'System is ODE
+
+1990 IF ODE% = 1 THEN XN(I%) = XY(I%) + EPS * XN(I%)
+
+2660    CODE$ = CHR$(59 + 4 * D% + O% + 8 * ODE%)
+
+3050    IF ODE% = 1 THEN L = L / EPS
+
+3660 IF ODE% = 1 THEN D% = D% + 2
+3680 IF Q$ = "D" THEN D% = 1 + (D% MOD 6): T% = 1
+3700 IF D% > 4 THEN ODE% = 1: D% = D% - 2 ELSE ODE% = 0
+
+4300    PRINT TAB(27); "D: System is"; STR$(D%); "-D polynomial ";
+4310    IF ODE% = 1 THEN PRINT "ODE" ELSE PRINT "map"
+
+4730 IF D% > 4 THEN D% = D% - 2: ODE% = 1 ELSE ODE% = 0
+

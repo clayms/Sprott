@@ -1,0 +1,50 @@
+1000 REM FOUR-D MAP SEARCH (With Search and Destroy)
+
+1380 IF QM% <> 2 THEN GOTO 1420
+1390    NE = 0: CLOSE
+1400    OPEN "SA.DIC" FOR APPEND AS #1: CLOSE
+1410    OPEN "SA.DIC" FOR INPUT AS #1
+
+2420 IF QM% = 2 THEN GOTO 2490  'Speed up evaluation mode
+
+2610 IF QM% <> 2 THEN GOTO 2640 'Not in evaluate mode
+2620    IF EOF(1) THEN QM% = 0: GOSUB 6000: GOTO 2640
+2630    IF EOF(1) = 0 THEN LINE INPUT #1, CODE$: GOSUB 4700: GOSUB 5600
+
+3340 IF QM% <> 2 THEN GOTO 3400         'Not in evaluate mode
+3350    LOCATE 1, 1: PRINT "<Space Bar>: Discard       <Enter>: Save";
+3370    LOCATE 1, 49: PRINT "<Esc>: Exit";
+3380    LOCATE 1, 69: PRINT CINT((LOF(1) - 128 * LOC(1)) / 1024); "K left";
+3390    GOTO 3430
+
+3620 IF QM% = 2 THEN GOSUB 5800                 'Process evaluation command
+3630 IF INSTR("ADEHIPRSX", Q$) = 0 THEN GOSUB 4200
+3710 IF Q$ = "E" THEN T% = 1: QM% = 2
+
+4220 WHILE Q$ = "" OR INSTR("AEIX", Q$) = 0
+4320    PRINT TAB(27); "E: Evaluate attractors"
+
+5800 REM Process evaluation command
+5810 IF Q$ = " " THEN T% = 2: NE = NE + 1: CLS
+5820 IF Q$ = CHR$(13) THEN T% = 2: NE = NE + 1: CLS : GOSUB 5900
+5830 IF Q$ = CHR$(27) THEN CLS : GOSUB 6000: Q$ = " ": QM% = 0: GOTO 5850
+5840 IF Q$ <> CHR$(27) AND INSTR("HPRS", Q$) = 0 THEN Q$ = ""
+5850 RETURN
+
+5900 REM Save favorite attractors to disk file FAVORITE.DIC
+5910 OPEN "FAVORITE.DIC" FOR APPEND AS #2
+5920 PRINT #2, CODE$
+5930 CLOSE #2
+5940 RETURN
+
+6000 REM Update SA.DIC file
+6010 LOCATE 11, 9: PRINT "Evaluation complete"
+6020 LOCATE 12, 8: PRINT NE; "cases evaluated"
+6030 OPEN "SATEMP.DIC" FOR OUTPUT AS #2
+6040 IF QM% = 2 THEN PRINT #2, CODE$
+6050 WHILE NOT EOF(1): LINE INPUT #1, CODE$: PRINT #2, CODE$: WEND
+6060 CLOSE
+6070 KILL "SA.DIC"
+6080 NAME "SATEMP.DIC" AS "SA.DIC"
+6090 RETURN
+

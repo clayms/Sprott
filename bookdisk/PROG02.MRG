@@ -1,0 +1,11 @@
+1000 REM LOGISTIC EQUATION (5th Previous Iterate)
+1020 DIM XS(499)
+1040 PREV% = 5                  'Plot versus fifth previous iterate
+
+1580 P% = 0
+
+2210 XS(P%) = X
+2220 P% = (P% + 1) MOD 500
+2230 I% = (P% + 500 - PREV%) MOD 500
+2300 PSET (XS(I%), XNEW)                'Plot point on screen
+

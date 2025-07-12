@@ -1,0 +1,45 @@
+1000 REM THREE-D MAP SEARCH (With Shadow Display)
+1020 DIM XS(499), YS(499), ZS(499), A(504), V(99), XY(4), XN(4), COLR%(15)
+1120 TRD% = 1                   'Display third dimension as shadow
+
+1370 GOSUB 5600                 'Set colors
+
+2300    GOSUB 5000                      'Plot point on screen
+
+3210 IF D% < 3 THEN GOTO 3310
+3230    IF TRD% = 1 THEN LINE (XL, YL)-(XH, YH), COLR%(1), BF: GOSUB 5400
+3430 TIA = .05               'Tangent of illumination angle
+3440 XZ = -TIA * (XMAX - XMIN) / (ZMAX - ZMIN)
+3450 YZ = TIA * (YMAX - YMIN) / (ZMAX - ZMIN)
+
+3630 IF Q$ = "" OR INSTR("ADIPRSX", Q$) = 0 THEN GOSUB 4200
+3760 IF Q$ = "R" THEN TRD% = (TRD% + 1) MOD 2: T% = 3: IF N > 999 THEN N = 999
+
+4460    PRINT TAB(27); "R: Third dimension is ";
+4470        IF TRD% = 0 THEN PRINT "projection"
+4480        IF TRD% = 1 THEN PRINT "shadow    "
+
+5000 REM Plot point on screen
+5060 IF TRD% = 0 THEN PSET (XP, YP)
+5070 IF TRD% <> 1 THEN GOTO 5130
+5090    C% = POINT(XP, YP)
+5100    IF C% = COLR%(2) THEN PSET (XP, YP), COLR%(3) ELSE IF C% <> COLR%(3) THEN PSET (XP, YP), COLR%(2)
+5110    XP = XP - XZ * (Z - ZMIN): YP = YP - YZ * (Z - ZMIN)
+5120    IF POINT(XP, YP) = COLR%(1) THEN PSET (XP, YP), 0
+5130 RETURN
+
+5400 REM Plot background grid
+5410 FOR I% = 0 TO 15           'Draw 15 vertical grid lines
+5420    XP = XMIN + I% * (XMAX - XMIN) / 15
+5430    LINE (XP, YMIN)-(XP, YMAX), 0
+5440 NEXT I%
+5450 FOR I% = 0 TO 10           'Draw 10 horizontal grid lines
+5460    YP = YMIN + I% * (YMAX - YMIN) / 10
+5470    LINE (XMIN, YP)-(XMAX, YP), 0
+5480 NEXT I%
+5490 RETURN
+
+5600 REM Set colors
+5620 COLR%(0) = 0: COLR%(1) = 8: COLR%(2) = 7: COLR%(3) = 15
+5720 RETURN
+
